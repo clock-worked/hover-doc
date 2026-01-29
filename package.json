@@ -1,0 +1,220 @@
+{
+    "name": "hoverdoc",
+    "displayName": "HoverDoc",
+    "description": "Hover tooltips for custom block comment documentation.",
+    "version": "0.0.1",
+    "publisher": "Clockworked",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/clock-worked/hover-doc.git"
+    },
+    "bugs": {
+        "url": "https://github.com/clock-worked/hover-doc/issues"
+    },
+    "homepage": "https://github.com/clock-worked/hover-doc#readme",
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "configuration": {
+            "title": "HoverDoc",
+            "properties": {
+                "hoverDoc.languageIds": {
+                    "type": "array",
+                    "description": "Language IDs to enable HoverDoc for.",
+                    "default": [
+                        "csharp"
+                    ],
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "hoverDoc.enableSymbols": {
+                    "type": "array",
+                    "description": "Symbol kinds to provide hover for.",
+                    "default": [
+                        "Class",
+                        "Method"
+                    ],
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "Class",
+                            "Method",
+                            "Property",
+                            "Field"
+                        ]
+                    }
+                },
+                "hoverDoc.fileGlobs": {
+                    "type": "array",
+                    "description": "File glob patterns to enable HoverDoc for.",
+                    "default": [],
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "hoverDoc.commentStyle": {
+                    "type": "string",
+                    "description": "Comment style to parse: block, line, or auto.",
+                    "markdownDescription": "Comment style to parse: block, line, or auto.\n\nExample (block):\n```csharp\n/**************************************************************************\n* **Class**: Manager\n* **Description**: This is the manager for custom behavior.\n***************************************************************************/\n```",
+                    "enum": [
+                        "block",
+                        "line",
+                        "auto"
+                    ],
+                    "default": "block"
+                },
+                "hoverDoc.fieldLabels": {
+                    "type": "object",
+                    "description": "Field labels used in custom comment blocks.",
+                    "markdownDescription": "Field labels used in custom comment blocks. The **label text** to the left of ':' is what gets matched.\n\nExample (method):\n```csharp\n/**************************************************************************\n* **Method**: UpdateTexture\n* **Description**: Applies the target image texture.\n* **Args**: Texture2D texture\n***************************************************************************/\n```\n\nExample (line comments):\n```csharp\n// **Method**: UpdateTexture\n// **Description**: Applies the target image texture.\n// **Args**: Texture2D texture\n```",
+                    "default": {
+                        "class": [
+                            "Class"
+                        ],
+                        "method": [
+                            "Method"
+                        ],
+                        "description": [
+                            "Description"
+                        ],
+                        "args": [
+                            "Args",
+                            "Arguments",
+                            "Param",
+                            "Params"
+                        ],
+                        "property": [
+                            "Property"
+                        ],
+                        "field": [
+                            "Field"
+                        ]
+                    },
+                    "properties": {
+                        "class": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "method": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "description": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "args": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "property": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "field": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "hoverDoc.matchingRule": {
+                    "type": "string",
+                    "description": "How to match comment blocks to symbols.",
+                    "enum": [
+                        "nearest",
+                        "adjacent"
+                    ],
+                    "default": "nearest"
+                },
+                "hoverDoc.requireLabelMatch": {
+                    "type": "boolean",
+                    "description": "Require the comment block to include a matching Class/Method/Property/Field label.",
+                    "default": false
+                },
+                "hoverDoc.maxBlankLines": {
+                    "type": "number",
+                    "description": "When matchingRule is 'adjacent', allow at most this many blank lines between comment and symbol.",
+                    "default": 0
+                },
+                "hoverDoc.maxScanLines": {
+                    "type": "number",
+                    "description": "Maximum number of lines to scan upward from the symbol. Use 0 for unlimited.",
+                    "default": 0
+                },
+                "hoverDoc.includeSignature": {
+                    "type": "boolean",
+                    "description": "Append the symbol signature to the hover output.",
+                    "default": false
+                },
+                "hoverDoc.argsFormat": {
+                    "type": "string",
+                    "description": "How to render args in the hover output.",
+                    "enum": [
+                        "list",
+                        "inline",
+                        "none"
+                    ],
+                    "default": "list"
+                },
+                "hoverDoc.outputTemplate": {
+                    "type": "string",
+                    "description": "Markdown template for hover output. Placeholders: {kind}, {name}, {description}, {args}, {raw}.",
+                    "markdownDescription": "Markdown template for hover output. Placeholders: `{kind}`, `{name}`, `{description}`, `{args}`, `{raw}`, `{signature}`.\n\nExample:\n```markdown\n**{name}**\n\n{description}\n\n{args}\n```",
+                    "default": "**{name}**\n\n{description}\n\n{args}"
+                },
+                "hoverDoc.outputTemplateByKind": {
+                    "type": "object",
+                    "description": "Optional per-symbol template overrides.",
+                    "markdownDescription": "Optional per-symbol template overrides. Keys: `class`, `method`, `property`, `field`.\n\nExample:\n```json\n{\n  \"method\": \"**{name}**\\n\\n{description}\\n\\n{args}\\n\\n{signature}\"\n}\n```",
+                    "default": {},
+                    "properties": {
+                        "class": {
+                            "type": "string"
+                        },
+                        "method": {
+                            "type": "string"
+                        },
+                        "property": {
+                            "type": "string"
+                        },
+                        "field": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.19",
+        "@types/vscode": "^1.85.0",
+        "typescript": "^5.4.5"
+    }
+}
